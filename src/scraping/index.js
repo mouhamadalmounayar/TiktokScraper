@@ -1,7 +1,9 @@
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const ora = require("ora");
-const { ArgumentCountError, FetchingDataError } = require("../utils/Errors");
+const { ErrorFetchingData } = require("../utils/Errors");
+const { setInterceptors, setApiInterceptors } = require("./interceptors");
+const { getFollowerSelector, getLikesSelector } = require("./selectors");
 puppeteer.use(StealthPlugin());
 const fetchData = async (username) => {
   const browser = await puppeteer.launch({
@@ -9,88 +11,25 @@ const fetchData = async (username) => {
   });
 
   const page = await browser.newPage();
-
-  await page.setRequestInterception(true);
-  page.on("request", (request) => {
-    if (
-      ["image", "stylesheet", "font", "media"].includes(request.resourceType())
-    ) {
-      request.abort();
-    } else {
-      request.continue();
-    }
+  await setInterceptors(page);
+  const dataPromise = setApiInterceptors(page);
+  dataPromise.catch((err) => {
+    throw new ErrorFetchingData(err.message);
   });
 
-  try {
-    // setup for intercepting api requests
-    const dataPromise = new Promise((resolve, reject) => {
-      page.on("response", async (response) => {
-        const request = response.request();
-        const url = request.url();
-        if (url.includes("/api/post/item_list")) {
-          try {
-            const jsonData = await response.json();
-            let filteredData = [];
-            jsonData.itemList.forEach((element) => {
-              filteredData.push({
-                id: element.id,
-                duration: element.video.duration,
-                views: element.statsV2.playCount,
-                creationTime: element.createTime,
-                likes: element.statsV2.diggCount,
-                comments: element.statsV2.commentCount,
-                shares: element.statsV2.shareCount,
-                desc: element.desc,
-              });
-            });
-            resolve(filteredData);
-          } catch (error) {
-            reject(error);
-          }
-        }
-      });
-    });
+  await page.goto(`https://tiktok.com/@${username}`);
 
-    await page.goto(`https://www.tiktok.com/@${username}`, {
-      waitUntil: "networkidle2",
-    });
+  const followers = await getFollowerSelector(page);
+  const likes = await getLikesSelector(page);
+  const videos = await dataPromise;
 
-    // getting the number of followers
+  await browser.close();
 
-    await page.waitForSelector('strong[data-e2e = "followers-count"]');
-    const followers = await page.evaluate(() => {
-      const selected = document.querySelector(
-        'strong[data-e2e = "followers-count"]'
-      ).innerText;
-      if (selected.includes("K")) return parseFloat(selected) * 1000;
-      if (selected.includes("M")) return parseFloat(selected) * 1000000;
-      return parseFloat(selected);
-    });
-
-    // getting the number of likes
-    await page.waitForSelector('strong[data-e2e = "likes-count"]');
-    const likes = await page.evaluate(() => {
-      const selected = document.querySelector(
-        'strong[data-e2e = "likes-count"]'
-      ).innerText;
-      if (selected.includes("K")) return parseFloat(selected) * 1000;
-      if (selected.includes("M")) return parseFloat(selected) * 1000000;
-      return parseFloat(selected);
-    });
-
-    // information from intercepted api calls
-    const videos = await dataPromise;
-
-    return {
-      global_followers: followers,
-      global_likes: likes,
-      videos: videos,
-    };
-  } catch (error) {
-    throw new FetchingDataError("There was an error fetching the data.");
-  } finally {
-    await browser.close();
-  }
+  return {
+    nbFollowers: followers,
+    nbLikes: likes,
+    videos: videos,
+  };
 };
 
 module.exports = fetchData;
