@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const ora = require("ora");
-const { ArgumentCountError, FetchingDataError } = require("./Errors");
+const { ArgumentCountError, FetchingDataError } = require("../utils/Errors");
 puppeteer.use(StealthPlugin());
 const fetchData = async (username) => {
   const browser = await puppeteer.launch({
@@ -92,21 +92,5 @@ const fetchData = async (username) => {
     await browser.close();
   }
 };
-
-const main = () => {
-  if (process.argv.length != 3) {
-    throw new ArgumentCountError(3, process.argv.length);
-  }
-  username = process.argv[2];
-  const throbber = ora(
-    "Fetching all the data for this account. This may take a few seconds."
-  ).start();
-  fetchData(username).then((data) => {
-    throbber.stop();
-    console.log(data);
-  });
-};
-
-main();
 
 module.exports = fetchData;
