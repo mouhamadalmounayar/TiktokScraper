@@ -21,18 +21,17 @@ const fetchData = async (username) => {
   try {
     const followers = await getFollowerSelector(page);
     const likes = await getLikesSelector(page);
+    const videos = await dataPromise;
+    return {
+      nbFollowers: followers,
+      nbLikes: likes,
+      videos: videos,
+    };
   } catch (err) {
     throw new ErrorFetchingData(err.message);
+  } finally {
+    await browser.close();
   }
-  const videos = await dataPromise;
-
-  await browser.close();
-
-  return {
-    nbFollowers: followers,
-    nbLikes: likes,
-    videos: videos,
-  };
 };
 
 module.exports = fetchData;

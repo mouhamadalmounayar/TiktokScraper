@@ -1,20 +1,32 @@
 {
-  "name": "scrapetiktok",
+  "name": "tiktok-scraper",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "type": "commonjs",
+  "description": "A Node.js script that scrapes the TikTok website to gather valuable data about specific profiles. It can be employed to create datasets for machine learning models, facilitating tasks such as sentiment analysis, content recommendation, user behavior prediction, and more. ",
+  "main": "./src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run test"
   },
-  "author": "",
+  "bin" : {
+    "tiktok-scraper" : "./src/scripts/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mouhamadalmounayar/TiktokScraper.git"
+  },
+  "keywords": [
+    "tiktok",
+    "scraper",
+    "api"
+  ],
+  "author": "AlMoonlight",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mouhamadalmounayar/TiktokScraper/issues"
+  },
+  "homepage": "https://github.com/mouhamadalmounayar/TiktokScraper#readme",
   "dependencies": {
-    "chalk": "^4.1.2",
-    "csv-parser": "^3.0.0",
-    "ora": "^5.4.1",
-    "puppeteer": "^22.13.0",
-    "puppeteer-cluster": "^0.24.0",
+    "ora": "^5.0.0",
+    "puppeteer": "^22.13.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
