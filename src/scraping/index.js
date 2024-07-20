@@ -18,9 +18,12 @@ const fetchData = async (username) => {
   });
 
   await page.goto(`https://tiktok.com/@${username}`);
-
-  const followers = await getFollowerSelector(page);
-  const likes = await getLikesSelector(page);
+  try {
+    const followers = await getFollowerSelector(page);
+    const likes = await getLikesSelector(page);
+  } catch (err) {
+    throw new ErrorFetchingData(err.message);
+  }
   const videos = await dataPromise;
 
   await browser.close();
