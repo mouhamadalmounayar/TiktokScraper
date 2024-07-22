@@ -1,13 +1,13 @@
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
-const ora = require("ora");
 const { ErrorFetchingData } = require("../utils/Errors");
 const { setInterceptors, setApiInterceptors } = require("./interceptors");
 const { getFollowerSelector, getLikesSelector } = require("./selectors");
+
 puppeteer.use(StealthPlugin());
 const fetchData = async (username) => {
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
   });
 
   const page = await browser.newPage();

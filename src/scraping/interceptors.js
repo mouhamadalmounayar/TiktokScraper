@@ -1,30 +1,43 @@
+const autoScroll = require("../utils/scroll");
+
 const setApiInterceptors = (page) => {
   return new Promise((resolve, reject) => {
+    var nbRequests = 0;
+    let data = [];
+    let visited = new Set();
     page.on("response", async (response) => {
       const request = response.request();
       const url = request.url();
       if (url.includes("/api/post/item_list")) {
         try {
           const jsonData = await response.json();
-          let filteredData = [];
-          jsonData.itemList.forEach((element) => {
-            filteredData.push({
-              id: element.id,
-              duration: element.video.duration,
-              views: element.statsV2.playCount,
-              creationTime: element.createTime,
-              likes: element.statsV2.diggCount,
-              comments: element.statsV2.commentCount,
-              shares: element.statsV2.shareCount,
-              desc: element.desc,
+          const uniqueId = jsonData.itemList[0].createTime;
+          if (visited.has(uniqueId)) {
+            console.log("\n Ignoring repeated request \n");
+          } else {
+            visited.add(uniqueId);
+            nbRequests++;
+            console.log(`\n Request intercepted : ${nbRequests} \n`);
+            jsonData.itemList.forEach((element) => {
+              data.push({
+                id: element.id,
+                duration: element.video.duration,
+                views: element.statsV2.playCount,
+                creationTime: element.createTime,
+                likes: element.statsV2.diggCount,
+                comments: element.statsV2.commentCount,
+                shares: element.statsV2.shareCount,
+                desc: element.desc,
+              });
             });
-          });
-          resolve(filteredData);
+          }
+          await autoScroll(page);
         } catch (error) {
           reject(error);
+        } finally {
+          resolve(data);
         }
       }
-      // other api endpoints to add later...
     });
   });
 };
@@ -42,4 +55,4 @@ const setInterceptors = async (page) => {
   });
 };
 
-module.exports = {setInterceptors , setApiInterceptors}
+module.exports = { setInterceptors, setApiInterceptors };
