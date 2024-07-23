@@ -1,18 +1,27 @@
 # Tiktok scraper
 
-## Overview 
-This Node.js script scrapes the TikTok website to gather valuable data about specific profiles. It can be employed to create datasets for machine learning models, facilitating tasks such as sentiment analysis, content recommendation, user behavior prediction, and more. 
+## Motivation 
+TikTok currently restricts access to their public API for developers, requiring a lengthy application process for access. I faced this problem while working on a machine learning project where I needed a substantial dataset to train my model. That is why I created this repository. 
+
+## How does it work? 
+This Node.js package is designed to gather information from TikTok using Puppeteer. It employs two primary methods to collect data:
+- Intercepting api calls: The implementation details for this approach can be found in  `src/scraping/interceptors.js` . 
+- Getting information from the html directly : The implementation details for this approach can be found in  `src/scraping/selectors.js`. 
 
 ## Getting started 
-1. Install dependencies : 
-```npm install ```
+This package is not released to npm yet. For now, in order to use it, you can :
+1. Clone the repository 
+```git clone  https://github.com/mouhamadalmounayar/TiktokScraper.git```
 
-2. Run the script : 
-    - cd to the repository : 
-    ```cd SCRAPETIKTOK```
-    - Run the script : 
-    ``` node . <username> ```
-    Replace username with the actual tiktok account username from which you want to fetch data. 
+2. Install dependencies : 
+``` npm install ``` 
+
+3. Use the CLI : 
+    - **Usage** 
+    ``` tiktok-scraper <username> ```
+    The response will then be logged to your console.
+    - **Flags** 
+      - `-f` : ```tiktok-scraper -f <filename> <username>``` This will save the data to a file in json format.
 
 ## Response format
 The response is a json object that follows this schema. 
