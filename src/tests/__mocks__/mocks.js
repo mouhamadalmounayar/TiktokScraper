@@ -1,6 +1,6 @@
-const generateMockObjects = (count) => {
-  const mockObjects = { itemList: [] };
-  const expectedResults = [];
+const generateMockPosts = (count) => {
+  let mockObjects = { itemList: [] };
+  let expectedResults = [];
   const currentTime = Math.floor(Date.now() / 1000);
 
   for (let i = 0; i < count; i++) {
@@ -17,7 +17,7 @@ const generateMockObjects = (count) => {
         shareCount: Math.floor(Math.random() * 5),
       },
       video: {
-        duration: Math.floor(Math.random() * 60) + 30, // Duration between 30 and 90 seconds
+        duration: Math.floor(Math.random() * 60) + 30,
       },
     };
     mockObjects.itemList.push(element);
@@ -35,4 +35,38 @@ const generateMockObjects = (count) => {
 
   return { mocks: mockObjects, results: expectedResults };
 };
-module.exports = generateMockObjects;
+
+const generateMockUsers = (count) => {
+  let mockObjects = { itemList: [] };
+  let expectedResults = [];
+  for (let i = 0; i < count; i++) {
+    const element = {
+      author: {
+        uniqueId: `user${i}`,
+        nickname: `user${i}`,
+        signature: `this is description number ${i}`,
+      },
+      authorStats: {
+        followerCount: Math.random() * 10,
+        followingCount: Math.random() * 10,
+        heartCount: Math.random() * 10,
+        videoCount: Math.random() * 10,
+      },
+    };
+    mockObjects.itemList.push(element);
+    expectedResults.push({
+      username: element.author.uniqueId,
+      nickname: element.author.nickname,
+      description: element.author.signature,
+      stats: {
+        followerCount: element.authorStats.followerCount,
+        followingCount: element.authorStats.followingCount,
+        heartCount: element.authorStats.heartCount,
+        videoCount: element.authorStats.videoCount,
+      },
+    });
+  }
+
+  return { mocks: mockObjects, results: expectedResults };
+};
+module.exports = { generateMockPosts, generateMockUsers };

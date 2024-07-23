@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer");
-const { app, mockObjects } = require("../__mocks__/app");
+const { app, mockPostObject, mockUserObject } = require("../__mocks__/app");
 const {
   setApiInterceptors,
   setInterceptors,
@@ -22,12 +22,23 @@ describe("API Interceptors", () => {
     server.close();
   });
 
-  test("should intercept and process the API response correctly", async () => {
-    const expectedData = mockObjects.results;
+  test("should intercept and process the API response for posts correctly", async () => {
+    const expectedData = mockPostObject.results;
     const flags = [];
     const promise = setApiInterceptors(page, flags);
     await page.goto("http://localhost:3000/api/post/item_list", {
-      waitUntil: "networkidle0",
+      waitUntil: "networkidle2",
+    });
+    const data = await promise;
+    expect(data).toEqual(expectedData);
+  });
+
+  test("should intercept and process the API response for users correctly", async () => {
+    const expectedData = mockUserObject.results;
+    const flags = [];
+    const promise = setApiInterceptors(page, flags);
+    await page.goto("http://localhost:3000/api/recommend/item_list", {
+      waitUntil: "networkidle2",
     });
     const data = await promise;
     expect(data).toEqual(expectedData);

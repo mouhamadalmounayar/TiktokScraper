@@ -28,7 +28,7 @@ const getVideosFromFeed = async (page, promise) => {
 };
 const fetchData = async (flags) => {
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
   });
 
   const page = await browser.newPage();
