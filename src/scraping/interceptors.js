@@ -39,6 +39,28 @@ const setApiInterceptors = (page, flags) => {
           resolve(data);
         }
       }
+      if (url.includes("/api/recommend/item_list")) {
+        try {
+          const jsonData = await response.json();
+          jsonData.itemList.forEach((element) => {
+            data.push({
+              username: element.author.uniqueId,
+              nickname: element.author.nickname,
+              description: element.author.signature,
+              stats: {
+                followerCount: element.authorStats.followerCount,
+                followingCount: element.authorStats.followingCount,
+                hearCount: element.authorStats.hearCount,
+                videoCount: element.authorStats.videoCount,
+              },
+            });
+          });
+        } catch (error) {
+          reject(error);
+        } finally {
+          resolve(data);
+        }
+      }
     });
   });
 };

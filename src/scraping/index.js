@@ -3,6 +3,7 @@ const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const { ErrorFetchingData } = require("../utils/Errors");
 const { setInterceptors, setApiInterceptors } = require("./interceptors");
 const { getFollowerSelector, getLikesSelector } = require("./selectors");
+const { containsKey } = require("../scripts/parsing");
 
 puppeteer.use(StealthPlugin());
 const fetchData = async (username, flags) => {
@@ -16,7 +17,6 @@ const fetchData = async (username, flags) => {
   dataPromise.catch((err) => {
     throw new ErrorFetchingData(err.message);
   });
-
   await page.goto(`https://tiktok.com/@${username}`);
   try {
     const followers = await getFollowerSelector(page);
