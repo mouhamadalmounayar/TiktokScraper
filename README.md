@@ -1,5 +1,12 @@
 # Tiktok scraper
 
+## Content 
+- [Motivation](#Motivation)
+- [How does it work?](#how-does-it-work)
+- [Getting Started](#getting-started)
+- [Response](#response-format)
+- [Errors](#errors-handling)
+- [Contributing](#contributing)
 ## Motivation 
 TikTok currently restricts access to their public API for developers, requiring a lengthy application process for access. I faced this problem while working on a machine learning project where I needed a substantial dataset to train my model. That is why I created this repository. 
 
@@ -24,7 +31,7 @@ This package is not released to npm yet. For now, in order to use it, you can :
       - `-f` : ```tiktok-scraper -f <filename> <username>``` This will save the data to a file in json format.
 
 ## Response format
-The response is a json object that follows this schema. 
+After fetching the data, TS will return it following this schema :
 
 ```javascript
 {
@@ -44,9 +51,15 @@ The response is a json object that follows this schema.
     ]
 }
 ```
+In the future, additional flags to fetch only certain data will be available. Furthermore, some builtin plugins to extract more useful data from the raw data. 
 
-## Error Handling 
+## Errors Handling 
 
-- **ArgumentCountError** : Thrown when the script is not provided with the correct number of command-line arguments.
+- **InvalidUsageError** : Thrown when the command you wrote is not valid.
 
-- **FetchingDataError** : Thrown when there is an error fetching data from TikTok's API or processing the retrieved data. To fix this, check your network connection and make sure that the user you provided exists. 
+- **ErrorFetchingData** : Thrown if, for one the following reasons, TS failed to fetch the corresponding data : 
+    - Your network connection : Since TS opens a headless browser it needs good internet connection to run. 
+    - Incorrect username : If the username you provided to TS is incorrect.
+
+## Contributing 
+Any help to make this project come to life would be very much appreciated. To contribute, check the issues dashboard for issues or create your own. Then fork the repository and open a pull request to the main branch. 
