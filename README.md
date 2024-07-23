@@ -44,7 +44,7 @@ git clone  https://github.com/mouhamadalmounayar/TiktokScraper.git
 
         - Sample Response :
 
-            ```json
+            ```
             {
                 nbFollowers: 139300,
                 nbLikes: 4400000,
@@ -89,7 +89,7 @@ git clone  https://github.com/mouhamadalmounayar/TiktokScraper.git
                 - `--users` : to scrape users from the for you feed.
                     - Sample Response :
 
-                        ```json
+                        ```
                             [
                             
                                 {
