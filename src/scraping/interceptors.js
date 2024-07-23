@@ -43,7 +43,7 @@ const setApiInterceptors = (page, flags) => {
         try {
           const jsonData = await response.json();
           jsonData.itemList.forEach((element) => {
-            data.push({
+            const user = {
               username: element.author.uniqueId,
               nickname: element.author.nickname,
               description: element.author.signature,
@@ -53,8 +53,13 @@ const setApiInterceptors = (page, flags) => {
                 heartCount: element.authorStats.heartCount,
                 videoCount: element.authorStats.videoCount,
               },
-            });
+            };
+            if (!visited.has(user.username)) {
+              data.push(user);
+              visited.add(user.username);
+            }
           });
+          await autoScroll(page);
         } catch (error) {
           reject(error);
         } finally {
