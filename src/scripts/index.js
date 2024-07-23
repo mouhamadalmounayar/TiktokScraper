@@ -8,11 +8,10 @@ const { ErrorWritingToFile } = require("../utils/Errors");
 const main = async () => {
   const commands = process.argv;
   const flags = processCommands(commands);
-  username = process.argv[commands.length - 1];
   const throbber = ora(
     "Fetching all the data for this account. This may take a few seconds."
   ).start();
-  const data = await fetchData(username, flags);
+  const data = await fetchData(flags);
   throbber.stopAndPersist({
     text: "Done fetching data",
     symbol: "✔️",

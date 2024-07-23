@@ -50,7 +50,7 @@ const setApiInterceptors = (page, flags) => {
               stats: {
                 followerCount: element.authorStats.followerCount,
                 followingCount: element.authorStats.followingCount,
-                hearCount: element.authorStats.hearCount,
+                heartCount: element.authorStats.heartCount,
                 videoCount: element.authorStats.videoCount,
               },
             });
