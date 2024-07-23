@@ -1,9 +1,6 @@
-function ArgumentCountError(expected, received) {
-  const message = `Expected ${expected} arguments, but received ${received}.`;
+function InvalidUsageError(message) {
   this.message = message;
-  this.expected = expected;
-  this.received = received;
-  Error.captureStackTrace(this, ArgumentCountError);
+  Error.captureStackTrace(this, InvalidUsageError);
 }
 
 function ErrorFetchingData(message) {
@@ -11,4 +8,8 @@ function ErrorFetchingData(message) {
   Error.captureStackTrace(this, ErrorFetchingData);
 }
 
-module.exports = { ArgumentCountError, ErrorFetchingData };
+function ErrorWritingToFile(message) {
+  this.message = message;
+  Error.captureStackTrace(this, ErrorFetchingData);
+}
+module.exports = { InvalidUsageError, ErrorFetchingData, ErrorWritingToFile };

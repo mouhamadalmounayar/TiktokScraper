@@ -13,11 +13,10 @@ const setApiInterceptors = (page) => {
           const jsonData = await response.json();
           const uniqueId = jsonData.itemList[0].createTime;
           if (visited.has(uniqueId)) {
-            console.log("\n Ignoring repeated request \n");
+            // do nothing
           } else {
             visited.add(uniqueId);
             nbRequests++;
-            console.log(`\n Request intercepted : ${nbRequests} \n`);
             jsonData.itemList.forEach((element) => {
               data.push({
                 id: element.id,

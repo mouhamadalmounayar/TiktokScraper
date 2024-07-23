@@ -7,7 +7,7 @@ const { getFollowerSelector, getLikesSelector } = require("./selectors");
 puppeteer.use(StealthPlugin());
 const fetchData = async (username) => {
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
   });
 
   const page = await browser.newPage();
