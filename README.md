@@ -29,6 +29,7 @@ This package is not released to npm yet. For now, in order to use it, you can :
     The response will then be logged to your console.
     - **Flags** 
       - `-f` : ```tiktok-scraper -f <filename> <username>``` This will save the data to a file in json format.
+      - `-a` : ```tiktok-scraper -a <username>``` This will fetch all videos from an account. If this flag is not used, only the first 35 videos will be fetched.
 
 ## Response format
 After fetching the data, TS will return it following this schema :
@@ -47,7 +48,8 @@ After fetching the data, TS will return it following this schema :
             comments: 
             shares: 
             desc: 
-        }
+        }, 
+        ...
     ]
 }
 ```

@@ -1,8 +1,7 @@
 const { InvalidUsageError } = require("../utils/Errors");
-
+const containsKey = (arr, key) => arr.find((obj) => key in obj);
 const processCommands = (commands) => {
-  let file;
-
+  let flags = [];
   for (let i = 2; i < commands.length - 1; i++) {
     if (commands[i].startsWith("-")) {
       const flag = commands[i][1];
@@ -14,15 +13,18 @@ const processCommands = (commands) => {
           }
 
           file = commands[i + 1];
+          flags.push({ f: file });
           break;
-
+        case "a":
+          flags.push({ a: "" });
+          break;
         default:
           throw new InvalidUsageError(`Unknown flag -${flag}`);
       }
     }
   }
 
-  return file;
+  return flags;
 };
 
-module.exports = processCommands;
+module.exports = { processCommands, containsKey };

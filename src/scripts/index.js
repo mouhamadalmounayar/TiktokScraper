@@ -3,22 +3,23 @@
 const fetchData = require("../scraping/index");
 const ora = require("ora");
 const fs = require("fs");
-const processCommands = require("./parsing");
+const { processCommands, containsKey } = require("./parsing");
 const { ErrorWritingToFile } = require("../utils/Errors");
 const main = async () => {
   const commands = process.argv;
-  const file = processCommands(commands);
+  const flags = processCommands(commands);
   username = process.argv[commands.length - 1];
   const throbber = ora(
     "Fetching all the data for this account. This may take a few seconds."
   ).start();
-  const data = await fetchData(username);
+  const data = await fetchData(username, flags);
   throbber.stopAndPersist({
     text: "Done fetching data",
     symbol: "✔️",
   });
-  if (file != null) {
-    fs.writeFile(file, JSON.stringify(data, null, 2), (err) => {
+  const fileObject = containsKey(flags, "f");
+  if (fileObject != null) {
+    fs.writeFile(fileObject.f, JSON.stringify(data, null, 2), (err) => {
       if (err) {
         throw new ErrorWritingToFile(err.message);
       } else {

@@ -5,14 +5,14 @@ const { setInterceptors, setApiInterceptors } = require("./interceptors");
 const { getFollowerSelector, getLikesSelector } = require("./selectors");
 
 puppeteer.use(StealthPlugin());
-const fetchData = async (username) => {
+const fetchData = async (username, flags) => {
   const browser = await puppeteer.launch({
     headless: true,
   });
 
   const page = await browser.newPage();
   await setInterceptors(page);
-  const dataPromise = setApiInterceptors(page);
+  const dataPromise = setApiInterceptors(page, flags);
   dataPromise.catch((err) => {
     throw new ErrorFetchingData(err.message);
   });

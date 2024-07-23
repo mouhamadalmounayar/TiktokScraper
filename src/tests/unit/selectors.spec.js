@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer");
-const app = require("../__mocks__/app");
+const { app } = require("../__mocks__/app");
 const {
   getFollowerSelector,
   getLikesSelector,

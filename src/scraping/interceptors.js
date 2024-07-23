@@ -1,6 +1,6 @@
 const autoScroll = require("../utils/scroll");
-
-const setApiInterceptors = (page) => {
+const { containsKey } = require("../scripts/parsing");
+const setApiInterceptors = (page, flags) => {
   return new Promise((resolve, reject) => {
     var nbRequests = 0;
     let data = [];
@@ -30,7 +30,9 @@ const setApiInterceptors = (page) => {
               });
             });
           }
-          await autoScroll(page);
+          if (containsKey(flags, "a") != null) {
+            await autoScroll(page);
+          }
         } catch (error) {
           reject(error);
         } finally {
