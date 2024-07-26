@@ -1,9 +1,13 @@
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const { ErrorFetchingData } = require("../utils/Errors");
-const { setInterceptors, setApiInterceptors } = require("./interceptors");
 const { getFollowerSelector, getLikesSelector } = require("./selectors");
-const { containsKey } = require("../scripts/parsing");
+const {
+  setUserInterceptorWithAllVideos,
+  setUserInterceptor,
+} = require("./userInterceptors/index");
+const setInterceptors = require("./pageInterceptors/index");
+const setFeedInterceptor = require("./feedInterceptor");
 
 puppeteer.use(StealthPlugin());
 
@@ -22,38 +26,51 @@ const getAllData = async (page, promise) => {
   }
 };
 
-const getVideosFromFeed = async (promise) => {
-  const data = await promise;
-  return data;
-};
-const fetchData = async (flags) => {
+const setup = async () => {
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
   });
 
   const page = await browser.newPage();
   await setInterceptors(page);
-  const dataPromise = setApiInterceptors(page, flags);
+  return {
+    page: page,
+    browser: browser,
+  };
+};
+
+const fetchDataWithAllVideos = async (username) => {
+  const { page, browser } = await setup();
+  const dataPromise = setUserInterceptorWithAllVideos(page);
   dataPromise.catch((err) => {
     throw new ErrorFetchingData(err.message);
   });
   try {
-    if (containsKey(flags, "scrapeFromFeed")) {
-      await page.goto("https://tiktok.com/foryou", {
-        waitUntil: "networkidle2",
-        timeout: 60000,
-      });
-      const result = await getVideosFromFeed(dataPromise);
-      return result;
-    } else {
-      const usernameObject = containsKey(flags, "username");
-      await page.goto(`https://tiktok.com/@${usernameObject.username}`, {
-        waitUntil: "networkidle2",
-        timeout: 60000,
-      });
-      const result = await getAllData(page, dataPromise);
-      return result;
-    }
+    await page.goto(`https://tiktok.com/@${username}`, {
+      waitUntil: "networkidle2",
+      timeout: 60000,
+    });
+    const result = await getAllData(page, dataPromise);
+    return result;
+  } catch (error) {
+    throw new ErrorFetchingData(error.message);
+  } finally {
+    await browser.close();
+  }
+};
+const fetchData = async (username) => {
+  const { page, browser } = await setup();
+  const dataPromise = setUserInterceptor(page);
+  dataPromise.catch((err) => {
+    throw new ErrorFetchingData(err.message);
+  });
+  try {
+    await page.goto(`https://tiktok.com/@${username}`, {
+      waitUntil: "networkidle2",
+      timeout: 60000,
+    });
+    const result = await dataPromise;
+    return result;
   } catch (error) {
     throw new ErrorFetchingData(error.message);
   } finally {
@@ -61,4 +78,24 @@ const fetchData = async (flags) => {
   }
 };
 
-module.exports = fetchData;
+const scrapeFeed = async (number) => {
+  const { page, browser } = await setup();
+  const dataPromise = setFeedInterceptor(page, number);
+  dataPromise.catch((err) => {
+    throw new ErrorFetchingData(err.message);
+  });
+  try {
+    await page.goto(`https://tiktok.com/foryou`, {
+      waitUntil: "networkidle2",
+      timeout: 60000,
+    });
+    const result = await dataPromise;
+    return result;
+  } catch (error) {
+    throw new ErrorFetchingData(error.message);
+  } finally {
+    await browser.close();
+  }
+};
+
+module.exports = { fetchData, fetchDataWithAllVideos, scrapeFeed };
