@@ -4,7 +4,7 @@ const {
   getFollowerSelector,
   getLikesSelector,
 } = require("../../scraping/selectors");
-const { setInterceptors } = require("../../scraping/interceptors");
+const setInterceptors = require("../../scraping/pageInterceptors/index");
 describe("tests for selectors ", () => {
   let browser;
   let page;
