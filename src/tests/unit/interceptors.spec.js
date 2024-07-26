@@ -35,7 +35,7 @@ describe("API Interceptors", () => {
 
   test("should intercept and process the API response for users correctly", async () => {
     const expectedData = mockUserObject.results;
-    const flags = [];
+    const flags = [{ scrapeFromFeed: { option: "users", number: 5 } }];
     const promise = setApiInterceptors(page, flags);
     await page.goto("http://localhost:3000/api/recommend/item_list", {
       waitUntil: "networkidle2",
