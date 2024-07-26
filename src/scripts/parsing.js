@@ -23,10 +23,16 @@ const processScrapeFromFeed = (index, commands, flags) => {
       "An option needs to be specified after the command scrapeFromFeed"
     );
   }
+  if (index + 2 == commands.length) {
+    throw new InvalidUsageError(
+      "A minimum number to scrape should be specified. Usage : tiktok-scraper scrapeFromFeed <option> <number>"
+    );
+  }
   const option = commands[index + 1];
+  const number = commands[index + 2];
   switch (option) {
     case "--users":
-      flags.push({ scrapeFromFeed: "users" });
+      flags.push({ scrapeFromFeed: { option: "users", number: number } });
       break;
     default:
       throw new InvalidUsageError(`Invalid option ${option}`);

@@ -22,8 +22,12 @@ const setApiInterceptors = (page, flags) => {
       }
       if (url.includes("/api/recommend/item_list")) {
         try {
-          await handleRecommendItem(data, visited, response);
-          await autoScroll(page);
+          const minimalNumberOfScrapings = containsKey(flags, "scrapeFromFeed")
+            .scrapeFromFeed.number;
+          while (visited.size <= minimalNumberOfScrapings) {
+            await handleRecommendItem(data, visited, response);
+            await autoScroll(page);
+          }
         } catch (error) {
           reject(error);
         } finally {
@@ -47,4 +51,7 @@ const setInterceptors = async (page) => {
   });
 };
 
-module.exports = { setInterceptors, setApiInterceptors };
+module.exports = {
+  setInterceptors,
+  setApiInterceptors,
+};

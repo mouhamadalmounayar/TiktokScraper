@@ -22,7 +22,7 @@ const getAllData = async (page, promise) => {
   }
 };
 
-const getVideosFromFeed = async (page, promise) => {
+const getVideosFromFeed = async (promise) => {
   const data = await promise;
   return data;
 };
@@ -43,7 +43,7 @@ const fetchData = async (flags) => {
         waitUntil: "networkidle2",
         timeout: 60000,
       });
-      const result = await getVideosFromFeed(page, dataPromise);
+      const result = await getVideosFromFeed(dataPromise);
       return result;
     } else {
       const usernameObject = containsKey(flags, "username");
